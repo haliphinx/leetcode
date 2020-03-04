@@ -1,36 +1,34 @@
-# -*- coding: utf-8 -*-
-# @Author: xhu
-# @Date:   2018-04-09 11:00:56
-# @Last Modified by:   xhu
-# @Last Modified time: 2018-04-12 12:01:59
-class Solution(object):
-    def threeSum(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: List[List[int]]
-        """
-        res = []
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        if len(nums) == 0:
+            return []
         nums.sort()
-        for i in range(len(nums)-2):
-        	if (i > 0) and (nums[i] == nums[i-1]):
-        		continue
-        	r = i+1
-        	l = len(nums)-1
-        	while r<l:
-        		s = nums[i]+nums[r]+nums[l]
-        		if s < 0:
-        			r+=1
-        		elif s>0:
-        			l-=1
-        		else:
-        			res.append((nums[i],nums[r],nums[l]))
-        			while r<l and nums[r] == nums[r+1]:
-        				r+=1
-        			while r<l and nums[l] == nums[l-1]:
-        				l-=1
-        			r+=1
-        			l-=1
+        print(nums)
+        res = []
+        left = 0
+        for left in range(0,len(nums)-1):
+            if nums[left]>0:
+                break
+            if left>0 and nums[left] == nums[left-1]:
+                continue
+            le = left+1
+            ri = len(nums)-1
+            while le<ri:
+                if nums[le]+nums[ri]+nums[left] == 0:
+                    res.append([nums[left],nums[le],nums[ri]])
+
+                    le+=1
+                    while le<ri and nums[le] == nums[le-1]:
+                        le+=1
+                    
+                elif nums[le]+nums[ri]+nums[left] > 0:
+                    ri-=1
+                    while le<ri and nums[ri] == nums[ri+1]:
+                        ri-=1
+                    
+                else:
+                    le+=1
+                    while le<ri and nums[le] == nums[le-1]:
+                        le+=1
+            
         return res
-aa = [-1,0,1,2,-1,-4]
-bb = Solution()
-print bb.threeSum(aa)
