@@ -1,36 +1,31 @@
 class Solution:
-	def letterCombinations(self, digits):
-		ilen  = len(digits)
-		ndic = {"2":["a","b","c"],
-				"3":["d","e","f"],
-				"4":["g","h","i"],
-				"5":["j","k","l"],
-				"6":["m","n","o"],
-				"7":["p","q","r","s"],
-				"8":["t","u","v"],
-				"9":["w","x","y","z"]}
-		output = []
-		if ilen == 0:
-			return output
-		ntotal = 1
-		for n in range(ilen):
-			ntotal *= len(ndic[digits[n]])
+    def letterCombinations(self, digits: str) -> List[str]:
+        numLet = {'2':'abc','3':'def','4':'ghi','5':'jkl','6':'mno','7':'pqrs','8':'tuv','9':'wxyz'}
+        res = []
+        if len(digits) == 0:
+            return res
+        res_size = 1
+        
+        for i in range(len(digits)):
+            res_size*=len(numLet[digits[i]])
+            
+         
+        meta_size = res_size
+        meta = []
+        
+        for i in range(len(digits)):
+            meta_size//=len(numLet[digits[i]])
+            meta.append(meta_size)
+            
+        for i in range(res_size):
+            meta_str = ''
+            for j in range(len(digits)):
+                meta_str+=numLet[digits[j]][i//meta[j]%(len(numLet[digits[j]]))]
+            
 
-		ndig = len(ndic[digits[0]])
-		ntotal1 = int(ntotal/ndig)
-		for n in range(ntotal):
-			ind = int((n/ntotal1)%len(ndic[digits[0]]))
-			output.append(ndic[digits[0]][ind])
-
-		ntotal = ntotal1
-		for n in range(1,ilen):
-			ndig = len(ndic[digits[n]])
-			ntotal = int(ntotal/ndig)
-			for nw in range(len(output)):
-				output[nw] = output[nw]+str(ndic[digits[n]][int((nw/ntotal)%len(ndic[digits[n]]))])
-		# print (output)
-		return output
-
+            res.append(meta_str)
+        return res
+        
 
 
 
