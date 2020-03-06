@@ -1,94 +1,70 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-
-using namespace std;
-
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        //the reslt vector
-        vector<vector<int>> result;
-        vector<int> mid_res;
-        result.clear();
-
-        //sort the nums vector
-        sort(nums.begin(), nums.end());
-
-        int mid_target1;
-        int mid_target2;
-        int nums_len = nums.size();
-
-        for(int i = 0 ; i<nums_len-3 ; i++){
-            // cout<<"1:"<<i<<endl;
-            mid_target1 = target-nums[i];
-            for(int j = i+1 ; j<nums_len-2 ; j++){
-                // cout<<" 2:"<<j<<endl;
-                mid_target2 = mid_target1-nums[j];
-                int start = j+1;
-                int end = nums_len-1;
-                for(int k = 0;k<nums_len-j-2;k++){
-                    // cout<<"  3:"<<start<<","<<end<<endl;
-                    int res = nums[start]+nums[end];
-                    if (res > mid_target2){
-                        end--;
-                    }
-                    else if(res < mid_target2){
-                        start++;
-                    }
-                    else{
-                        // cout<<"   here"<<k<<":"<<nums_len-j-2<<endl;
-                        mid_res.clear();
-                        mid_res.push_back(nums[i]);
-                        mid_res.push_back(nums[j]);
-                        mid_res.push_back(nums[start]);
-                        mid_res.push_back(nums[end]);
-                        result.push_back(mid_res);
-                        while(nums[start]==nums[start+1]){
-                            start++;
-                            k++;
-                        }
-                        start++;
-                    }
-
-                }
-                while(nums[j]==nums[j+1]){
-                    j++;
-                }
+        set<vector<int>> ans;
+        if(nums.size()<4){
+            return vector<vector<int>>(ans.begin(), ans.end());
+        }
+        
+        sort(nums.begin(),nums.end());
+        // PrintVect(nums);
+        map<int,int> numTab;
+        
+        for(int i = 0; i<nums.size(); i++){
+            numTab[nums[i]] = i;
+        }
+        
+        int maxNum = nums[nums.size()-1];
+        
+        // i is the first position
+        for(int i = 0; i<nums.size()-3; i++){
+            
+            if(nums[i]+3*maxNum<target){
+                continue;
             }
-            while(nums[i]==nums[i+1]){
-                i++;
+            if(4*nums[i]>target){
+                break;
+            }
+            
+            // j is the second position
+            for(int j = i+1; j<nums.size()-2; j++){
+                if(nums[i]+nums[j]+2*maxNum<target){
+                    continue;
+                }
+                if(nums[i]+3*nums[j]>target){
+                    break;
+                }
+                
+                // k is the third position
+                for(int k = j+1; k<nums.size()-1; k++){
+                    int rest = target-nums[i]-nums[j]-nums[k];
+                    // cout<<nums[i]<<":"<<nums[j]<<":"<<nums[k]<<":"<<rest<<endl;
+                    if(rest>maxNum){
+                        continue;
+                    }
+                    if(rest<nums[k]){
+                        break;
+                    }
+                    if((numTab.count(rest))&&(numTab[rest]>k)){
+                        vector<int> meta;
+                        meta.push_back(nums[i]);
+                        meta.push_back(nums[j]);
+                        meta.push_back(nums[k]);
+                        meta.push_back(rest);
+                        ans.insert(meta);
+                    }
+                }
+                
             }
         }
-        return result;
+        
+        return vector<vector<int>>(ans.begin(), ans.end());
     }
+    
+    // void PrintVect(vector<int>& nums){
+    //     for(int i = 0; i<nums.size(); i++){
+    //         cout<<nums[i]<<",";
+    //     }
+    //     cout<<endl;
+    // }
 };
-
-int main()
-{
-    int target = 0;
-    vector<int> nums;
-    nums.push_back(-3);
-    nums.push_back(-2);
-    nums.push_back(-1);
-    nums.push_back(0);
-    nums.push_back(0);
-    nums.push_back(1);
-    nums.push_back(2);
-    nums.push_back(3);
-    Solution sol;
-    vector<vector<int>>res = sol.fourSum(nums, target);
-    cout<<'[';
-    for (int i = 0 ; i < res.size() ; i++){
-        cout<<'[';
-        for (int j = 0;j<res[i].size();j++){
-            cout<<res[i][j]<<',';
-        }
-        cout<<']'<<',';
-    }
-    cout<<']';
-
-    // cin >> ss;
-    // cout << "Hello World!\n" << ss << endl;
-    return 0;
-}
